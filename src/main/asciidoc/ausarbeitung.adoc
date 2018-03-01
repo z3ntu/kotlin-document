@@ -1,6 +1,6 @@
-= Ausarbeitung
-Klaus UNGER <unger@spengergasse.at>
-v0.1, 2018-01-25
+= Introduction to Kotlin
+Luca WEISS <wei16416@spengergasse.at>
+v0.1, 2018-03-01
 :example-caption!:
 :media: prepress
 :icons: font
@@ -13,19 +13,193 @@ ifdef::backend-pdf[:imagesdir: ../../../build/asciidoc/{backend}/images]
 
 == Abstract
 
-Here one should write the abstract of the paper. It is usually between 1 and 3 paragraphs long.
+Kotlin is a statically typed programming language, developed by JetBrains, a Czech software development company. It was first released in 2011 and has since reached many developers working in different fields.
+
+It can be run on the Java virtual machine but can also be compiled to Javascript or even native code. As Kotlin is interoperable with Java, you can use Java classes in a Kotlin project and Kotlin classes in a Java project.
 
 == Introduction
 
-Here goes the introduction into the topic.
+JetBrains, the development company of IntelliJ, Android Studio and many more IDEs were disliking some of Java's old fashioned ways. Using Java means writing a lot of code which modern programming languages do for you automatically. They were looking for a language compatible with Java as most of their tools are written in Java and found Scala. Unfortunately Scala wasn't a good alternative to Java due to its slow compile speed and bad IDE support.
+
+So they decided to create a new language based on the JVM which had all the features they wanted and a strong focus on compabitility with Java. In 2012 the language was open-sourced under the Apache 2 license.
+
+At Google I/O 2017, Google announced full support for the Kotlin programming language on Android and full integration in Android Studio, the IDE for Android apps based on IntelliJ. This means that software development companies now have the assurance from Google that it will be possible to develop Android apps in Kotlin for the foreseeable future which was an issue before the announcement.
 
 <<<
 
-=== Chapter 1
+== Basic Syntax
 
-Content of chapter 1.
+=== Hello World!
 
-=== Summary
+The bare minimum you need for a Kotlin application is a main method which is defined as follows:
+
+[source,kotlin]
+----
+fun main(args: Array<String>) {
+    println("Hello World!")
+}
+----
+
+As you can see, you do not need to declare the class manually as the compiler autocreates it for you in this example.
+
+Compilation is also easy via the command line (when not using Gradle or Maven or others):
+
+[source,console]
+----
+$ kotlinc hello.kt -include-runtime -d hello.jar
+----
+
+Afterwards you can run it like any other jar:
+
+[source,console]
+----
+$ java -jar hello.jar
+----
+
+=== Functions
+
+Functions can be defined in a variety of ways.
+
+A function having two `Int` parameters and an `Int` return type:
+
+[source,kotlin]
+----
+fun sum(a: Int, b: Int): Int {
+    return a + b
+}
+----
+
+A function having an expression body and an inferred return type:
+
+[source,kotlin]
+----
+fun sum(a: Int, b: Int) = a + b
+----
+
+A function returning the equivalent of `void` in Java which is `Unit`:
+
+[source,kotlin]
+----
+fun printSum(a: Int, b: Int): Unit {
+    println("sum of $a and $b is ${a + b}")
+}
+----
+
+In that example you can also see String Interpolation which is used for substituting variables and even e.g. calculations
+
+=== Variables
+
+The keyword `val` in Kotlin is equivalent to a `final` variable in Java which means that once assigned you cannot modify that variable.
+
+[source,kotlin]
+----
+val a: Int = 1
+val b = 2       // the `Int` type is inferred from the assignment
+----
+
+To create mutable variables (ones you can modify after you have set them):
+
+[source,kotlin]
+----
+var x = 5 // the `Int` type is inferred
+x += 1
+----
+
+=== String templates
+
+As mentioned before in Kotlin you can substitute variables directly in the string assignment and even run functions on the objects you are trying to print. The following example results in `s2` having `a was 1, but now is 2` assigned.
+
+[source,kotlin]
+----
+var a = 1
+// simple name in template:
+val s1 = "a is $a"
+
+a = 2
+// arbitrary expression in template:
+val s2 = "${s1.replace("is", "was")}, but now is $a"
+----
+
+=== Conditional expressions
+
+[source,kotlin]
+----
+fun maxOf(a: Int, b: Int): Int {
+    if (a > b) {
+        return a
+    } else {
+        return b
+    }
+}
+----
+
+Writing the preceding example is what you would probably do in Java and most other programming languages but in Kotlin there is a more elegant way to create the same function:
+
+[source,kotlin]
+----
+fun maxOf(a: Int, b: Int) = if (a > b) a else b
+----
+
+=== Null
+
+Another unfamiliar concept when coming from Java is that values are _normally_ not null. This means that e.g. when interacting with Java code from Kotlin you have to explicitely declare that a value can be null with the `?` operator.
+
+[source,kotlin]
+----
+fun parseInt(str: String): Int? {
+    // ...
+}
+----
+
+=== Others
+
+Kotlin has much more great syntactic sugar than what was presented.
+
+A good example is a `data class` which is essentially what your IDE or a plugin like https://projectlombok.org/[Lombok] would generate for you:
+
+[source,kotlin]
+----
+data class Customer(val name: String, val email: String)
+----
+
+This provides a `Customer` class with getters, setters, `equals()`, `hashCode()`, `toString()`, `copy()` and https://kotlinlang.org/docs/reference/multi-declarations.html[`componentN()` functions]
+
+== Java Interoperability
+
+=== Calling Java code from Kotlin
+
+As Kotlin was designed to be well interoperable with Java, calling existing Java code is very natural.
+
+==== Getters and Setters
+
+The Java convention for getters and setters is `.getVariablename()` and `.setVariablename()` which is translated to normal Kotlin properties you can access with `.variablename`
+
+[source,kotlin]
+----
+import java.util.Calendar
+
+fun calendarDemo() {
+    val calendar = Calendar.getInstance()
+    if (calendar.firstDayOfWeek == Calendar.SUNDAY) {  // call getFirstDayOfWeek()
+        calendar.firstDayOfWeek = Calendar.MONDAY      // call setFirstDayOfWeek()
+    }
+    if (!calendar.isLenient) {                         // call isLenient()
+        calendar.isLenient = true                      // call setLenient()
+    }
+}
+----
+
+==== Void
+
+Java methods returning `void` will be directly translated to the `Unit` class which was mentioned in <<Functions>>.
+
+=== Calling Kotlin code from Java
+
+The other way around is of course also possible and also very natural.
+
+*TODO*!!!!
+
+== Summary
 
 Here one should write the summary of the paper. It's usually between 1 and 5 paragraphs long.
 
@@ -33,14 +207,22 @@ Here one should write the summary of the paper. It's usually between 1 and 5 par
 
 === Resources
 
-.Quellen
+.Resources
 [cols="40,20,40", options="header"]
 |===
 | URL
-| Datum
-| Anmerkung
+| Date
+| Note
 
-| http://www.kurier.at[Kurier]
-| 2017-11-28
-| Klaus UNGER
+| https://kotlinlang.org/[Kotlin]
+| 2018-03-01
+|
+
+| https://en.wikipedia.org/wiki/Kotlin_(programming_language)[Wikipedia article]
+| 2018-03-01
+|
+
+| https://www.wired.com/story/kotlin-the-upstart-coding-language-conquering-silicon-valley/[WIRED]
+| 2018-03-01
+|
 |===
