@@ -1,6 +1,6 @@
 = Introduction to Kotlin
 Luca WEISS <wei16416@spengergasse.at>
-v0.1, 2018-03-01
+v0.2, 2018-03-04
 :example-caption!:
 :media: prepress
 :icons: font
@@ -151,7 +151,7 @@ fun parseInt(str: String): Int? {
 }
 ----
 
-=== Others
+=== More syntax
 
 Kotlin has much more great syntactic sugar than what was presented.
 
@@ -197,11 +197,49 @@ Java methods returning `void` will be directly translated to the `Unit` class wh
 
 The other way around is of course also possible and also very natural.
 
-*TODO*!!!!
+==== Getters and Setters
+
+Kotlin properties will be compiled to the following Java elements:
+
+* A Getter method with the `get` prefix
+* A Setter method with the `set` prefix (for val (=non-final) properties)
+* A private field with the same name as the property
+
+==== Package-Level Functions
+
+All properties and functions which were declared in a file called `example.kt` inside a package called `org.foo.bar` will be compiled into static methods in a Java class named `org.foo.bar.ExampleKt`.
+
+[source,kotlin]
+----
+// example.kt
+package demo
+
+class Foo
+
+fun bar() {
+}
+----
+
+[source,java]
+----
+// Java
+new demo.Foo();
+demo.ExampleKt.bar();
+----
+
+The generated Java class name can be changed using the `@JvmName` annotation e.g. `@file:JvmName("DemoUtils")`
+
+==== Null
+
+As there is nothing the Kotlin compiler can do to prevent you from passing `null` into a Kotlin function that expects a non-null value, the Kotlin compiler bakes in runtime checks that check against a `null` value and immediately throws a `NullPointerException`.
+
+==== More
+
+There are many more things you can customize for working with both Kotlin and Java files in a project. You can find them all on the kotlinlang.org website linked in the <<Resources>>.
 
 == Summary
 
-Here one should write the summary of the paper. It's usually between 1 and 5 paragraphs long.
+Kotlin is a modern programming language which fixes many problems that Java has in part due to its age. You can use less lines of code which are more readable compared to Java and other JVM languages. And as it integrates well with existing Java projects there is nothing stopping you from adding new functionality to your project written in Kotlin.
 
 <<<
 
@@ -216,13 +254,13 @@ Here one should write the summary of the paper. It's usually between 1 and 5 par
 
 | https://kotlinlang.org/[Kotlin]
 | 2018-03-01
-|
+| Official website
 
 | https://en.wikipedia.org/wiki/Kotlin_(programming_language)[Wikipedia article]
 | 2018-03-01
-|
+| General information about Kotlin
 
 | https://www.wired.com/story/kotlin-the-upstart-coding-language-conquering-silicon-valley/[WIRED]
 | 2018-03-01
-|
+| Partly about the history of Kotlin
 |===
